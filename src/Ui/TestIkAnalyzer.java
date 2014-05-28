@@ -135,8 +135,8 @@ public class TestIkAnalyzer {
 			iReader = IndexReader.open(directory);
 			iSeacher = new IndexSearcher(iReader);
 			
-			Term t1 = new Term("sname","长隆");
-			Term t2 = new Term("sname", "世界");
+			Term t1 = new Term("sname","白云");
+			Term t2 = new Term("sname", "云山");
 			Query q1 = new TermQuery(t1);
 			Query q2 = new TermQuery(t2);
 			BooleanQuery booleanQuery = new BooleanQuery();

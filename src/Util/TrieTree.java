@@ -1,4 +1,4 @@
-package Ui;
+package Util;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,12 +15,14 @@ import java.util.Stack;
 
 import javax.print.DocFlavor.STRING;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.bag.TreeBag;
 import org.apache.commons.lang.WordUtils;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
+
 
 import Util.AppUtil;
 
@@ -29,12 +31,12 @@ import Util.AppUtil;
  * @author yinchuandong
  *
  */
-public class TestTrieTree {
+public class TrieTree {
 
 	private TrieNode root = null;
 	private HashMap<String, Integer> sentenceMap = null;
 	
-	public TestTrieTree(){
+	public TrieTree(){
 		root = new TrieNode();
 		sentenceMap = new HashMap<String, Integer>();
 	}
@@ -63,7 +65,6 @@ public class TestTrieTree {
 		}
 		node.setTerminal(true);
 		node.setSentence(true);
-		System.out.println(word);
 		
 	}
 	
@@ -73,7 +74,6 @@ public class TestTrieTree {
 	 * @return
 	 */
 	public ArrayList<Sentence> find(String word){
-		System.out.println("-------------");
 		ArrayList<Sentence> result = new ArrayList<Sentence>();
 		 
 		TrieNode node = root;
@@ -85,7 +85,7 @@ public class TestTrieTree {
 				node = node.getChildren().get(key);
 				prefix += node.getWord();
 			}else{
-				return null;
+				return result;
 			}
 		}
 		
@@ -127,51 +127,79 @@ public class TestTrieTree {
 		return result;
 	}
 	
-	public static void main(String[] args) throws IOException{
-		TestTrieTree tree = new TestTrieTree();
+	/**
+	 * 搜索文档
+	 * @param keyWord
+	 * @return
+	 */
+	public static String doSearch(String keyWord, String dirpath){
+		JSONObject resultObj = JSONObject.fromObject("{}");;
+		if (keyWord == null || keyWord.length() <1) {
+			resultObj.put("info", AppUtil.toUnicode("关键字不合法"));
+			resultObj.put("status", "0");
+			resultObj.put("data", JSONArray.fromObject("[]"));
+			return resultObj.toString().replaceAll("\\\\u", "\\u");
+		}
 		
+		keyWord = keyWord.trim();
+		String fileName = keyWord.substring(0,1) + ".txt";
+		String filePath = dirpath + "/" + fileName;
+		
+		TrieTree tree = new TrieTree();
+		
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(new File(filePath)));
+			String line = null;
+			while((line = reader.readLine()) != null){
+				String[] arr = line.split(" ");
+				String word = arr[0];
+				int viewCount = Integer.parseInt(arr[1]);
+				tree.add(word, viewCount);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			try{
+				if (reader != null) {
+					reader.close();
+				}
+			}catch (Exception ex){
+				ex.printStackTrace();
+			}
+			resultObj.put("info", AppUtil.toUnicode("服务器错误"));
+			resultObj.put("status", "0");
+			resultObj.put("data", JSONArray.fromObject("[]"));
+			return resultObj.toString().replaceAll("\\\\u", "\\u");
+		}
+		
+		ArrayList<Sentence> list = tree.find(keyWord);
+		ArrayList<Sentence> keyList = new ArrayList<Sentence>();
+		int len = (list.size() > 10) ? 10 : list.size();
+		for (int i=0; i<len; i++){
+			Sentence sentence = list.get(i);
+			sentence.setWord(AppUtil.toUnicode(sentence.getWord()));
+			keyList.add(sentence);
+		}
+		
+		JSONArray jsonData = JSONArray.fromObject(keyList);
+		resultObj.put("info", AppUtil.toUnicode("返回成功"));
+		resultObj.put("status", "1");
+		resultObj.put("data", jsonData);
+		return resultObj.toString().replaceAll("\\\\u", "\\u");
+	}
+	
+	public static void main(String[] args) throws IOException{
 		System.out.println("-----------------");
 		long begin = System.currentTimeMillis();
 		
-		BufferedReader reader = new BufferedReader(new FileReader(new File("./words.txt")));
-		String line = null;
-		while((line = reader.readLine()) != null){
-			String[] arr = line.split(" ");
-			String word = arr[0];
-			int viewCount = Integer.parseInt(arr[1]);
-			tree.add(word, viewCount);
-		}
-		reader.close();
-		ArrayList<Sentence> list = tree.find("广");
-		for (Sentence sentence : list) {
-			System.out.println(sentence.getViewCount() + ":" + sentence.getWord());
-		}
+		String result = TrieTree.doSearch("广州科技", "E:\\traveldata\\keyword");
+		System.out.println(result);
 		
 		long end = System.currentTimeMillis();
 		System.out.println("耗时：" + (end - begin));
 	}
 	
-	public static void parseFile() throws FileNotFoundException{
-		File dir = new File("E:\\web");
-		File[] files = dir.listFiles();
-		PrintWriter writer = new PrintWriter(new File("./words.txt"));
-		for (int i = 0; i < files.length; i++) {
-			File file = files[i];
-			String content = AppUtil.readFile(file);
-			try {
-				JSONObject jsonObject = JSONObject.fromObject(content);
-				JSONObject dataObj = jsonObject.getJSONObject("data");
-				String sname = dataObj.getString("sname");
-				String viewCount = dataObj.getString("view_count");
-				writer.write(sname + " " + viewCount +"\r\n");
-				writer.flush();
-				System.out.println("第" + i + "个: " + sname);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-		writer.close();
-	}
+	
 	
 	/**
 	 * 搜索的结果对象

@@ -19,7 +19,7 @@ import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
-import Util.FileUtil;
+import Util.AppUtil;
 
 /**
  * Ë÷Òý½¨Á¢
@@ -53,7 +53,7 @@ public class TestIndex {
 			File[] files = dir.listFiles();
 			for (int i = 0; i < files.length; i++) {
 				File file = files[i];
-				String content = FileUtil.readFile(file);
+				String content = AppUtil.readFile(file);
 				ArrayList<Field> fieldList = parseJson(content);
 				Document doc = new Document();
 				for (Field field : fieldList) {
