@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import org.apache.lucene.document.Document;
@@ -12,6 +14,31 @@ import org.apache.lucene.document.Field;
 
 public class AppUtil {
 
+	/**
+	 * md5加密算法
+	 * @param str
+	 * @return
+	 */
+	static public String md5(String str) {
+		MessageDigest algorithm = null;
+		try {
+			algorithm = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		if (algorithm != null) {
+			algorithm.reset();
+			algorithm.update(str.getBytes());
+			byte[] bytes = algorithm.digest();
+			StringBuilder hexString = new StringBuilder();
+			for (byte b : bytes) {
+				hexString.append(Integer.toHexString(0xFF & b));
+			}
+			return hexString.toString();
+		}
+		return "";
+
+	}
 	
 	/**
 	 * 读取文件

@@ -12,5 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/ezmorph-1.0.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/json-lib-2.4-jdk15.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mysqldriver.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
