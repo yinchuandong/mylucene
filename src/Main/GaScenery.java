@@ -11,10 +11,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
 
+import javax.rmi.CORBA.Tie;
 import javax.xml.crypto.Data;
 
+import org.omg.PortableInterceptor.HOLDING;
+
+import Model.Route;
 import Model.Scenery;
 import Model.Hotel;
+import Util.AppUtil;
 import Util.DbUtil;
 import Util.GreedyUtil;
 import Util.HotelUtil;
@@ -117,7 +122,12 @@ public class GaScenery {
 	 * 游玩天数的下限
 	 */
 	private double downDay = 2.0;
-
+	
+	/**
+	 * 景点属于的城市的id
+	 */
+	private String cityId;
+	
 	/**
 	 * 
 	 * @param scale 种群规模
@@ -151,6 +161,7 @@ public class GaScenery {
 	 * @throws IOException 
 	 */
 	public void init(String cityId, double downDay, double upDay, HashMap<String, Hotel> hotelMap) throws IOException{
+		this.cityId = cityId;
 		this.downDay = downDay;
 		this.upDay = upDay;
 		this.hotelMap = hotelMap;
@@ -435,25 +446,84 @@ public class GaScenery {
 		selectBestGh();
 		
 		System.out.println("最后种群");
+		HashMap<String, Route> routeMap = new HashMap<String, Route>();
+		//获得城市对象
+		Scenery city = SceneryUtil.getCity(cityId);
 		for (int i = 0; i < scale; i++) {
-			double price = 0.0;
-			double hotness = 0.0;
+			double sceneTicket = 0.0;
+			double hotelPrice = 0.0;
+			double hotness = fitness[i];
 			double days = 0.0;
+			int viewCount = 0;
+			String tmpR = "";
+			Route route = new Route();
+			//获得景点列表
+			ArrayList<Scenery> sList = new ArrayList<Scenery>();
 			for (int j = 0; j < sceneryNum; j++) {
-//				System.out.print(oldPopulation[i][j] + ",");
 				if (oldPopulation[i][j] == 1) {
 					Scenery scene = sceneryList.get(j);
-					price += scene.getPrice();
-					hotness += scene.getViewCount();
+					sceneTicket += scene.getPrice();
+					viewCount += scene.getViewCount();
 					days += scene.getVisitDay();
+					tmpR += scene.getSid();
+					sList.add(scene);
 					System.out.print(scene.getSname() + ",");
 				}
 			}
-			System.out.print("  天数：" + days + " --价格：" + price + " --热度:" + hotness);
+			//获得推荐的酒店列表
+			ArrayList<Hotel> hotelList = new ArrayList<Hotel>();
+			String hotelStr = recommendHotel[i];
+			if (hotelStr != null && !hotelStr.equals("")) {
+				String[] arr = hotelStr.split(",");
+				for (String hSid : arr) {
+					Hotel hotel = hotelMap.get(hSid);
+					hotelPrice += hotel.getPrice();
+					hotelList.add(hotel);
+				}
+			}
+			
+			String uid = AppUtil.md5(tmpR);
+			String sid = city.getSid();
+			String ambiguitySname = city.getAmbiguitySname();
+			String sname = city.getSname();
+			String surl = city.getSurl();
+			double sumPrice = hotelPrice + sceneTicket;
+			
+			route.setUid(uid);
+			route.setSid(sid);
+			route.setAmbiguitySname(ambiguitySname);
+			route.setSname(sname);
+			route.setSurl(surl);
+			route.setUpDay(upDay);
+			route.setDownDay(downDay);
+			route.setVisitDay(days);
+			route.setHotness(hotness);
+			route.setViewCount(viewCount);
+			route.setHotelPrice(hotelPrice);
+			route.setSceneTicket(sceneTicket);
+			route.setSumPrice(sumPrice);
+			route.setSceneryList(sList);
+			route.setHotelList(hotelList);
+			if (!routeMap.containsKey(uid)) {
+				routeMap.put(uid, route);
+			}
+			System.out.print("  天数：" + days + " --价格：" + sceneTicket + " --热度:" + hotness);
 			System.out.print(" 适度：" + fitness[i] + " 酒店：" + recommendHotel[i]);
 			System.out.println();
 		}
 		
+		ArrayList<Route> routeList = new ArrayList<Route>();
+		Iterator<String> iter = routeMap.keySet().iterator();
+		while(iter.hasNext()){
+			String key = iter.next();
+			Route route = routeMap.get(key);
+			routeList.add(route);
+		}
+		
+		Collections.sort(routeList);
+		
+		
+		//------------------------------------
 		System.out.println("最佳长度出现代数：");
 		System.out.println(bestGen);
 		System.out.println("最佳长度");
@@ -500,8 +570,8 @@ public class GaScenery {
 		HashMap<String, Hotel> hotelMap = HotelUtil.getAllHotel();
 		
 		GaScenery ga = new GaScenery(300, 1000, 0.8, 0.9);
-		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
-//		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
+//		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
+		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
 		ga.solve();
 		
 		long end = System.currentTimeMillis();

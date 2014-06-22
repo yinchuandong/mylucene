@@ -8,6 +8,8 @@ public class Scenery {
 	private String ambiguitySname;
 	private String parentSid;
 	private int viewCount;
+	private double lng;
+	private double lat;
 	private double mapX;
 	private double mapY;
 	private double price;
@@ -48,6 +50,18 @@ public class Scenery {
 	}
 	public void setViewCount(int viewCount) {
 		this.viewCount = viewCount;
+	}
+	public double getLng() {
+		return lng;
+	}
+	public void setLng(double lng) {
+		this.lng = lng;
+	}
+	public double getLat() {
+		return lat;
+	}
+	public void setLat(double lat) {
+		this.lat = lat;
 	}
 	public double getMapX() {
 		return mapX;

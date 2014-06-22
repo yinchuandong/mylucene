@@ -136,7 +136,7 @@ public class SceneryUtil {
 		waitList.add(cityId);
 		try {
 			while(!waitList.isEmpty()){
-				String sql = "SELECT s.sid,s.surl,s.sname,s.scene_layer,s.view_count,s.map_x,s.map_y,s.price_desc,s.recommend_visit_time FROM t_scenery as s WHERE s.parent_sid=?";
+				String sql = "SELECT s.sid,s.surl,s.sname,s.ambiguity_sname,s.scene_layer,s.view_count,s.lat,s.lng,s.map_x,s.map_y,s.price_desc,s.recommend_visit_time FROM t_scenery as s WHERE s.parent_sid=?";
 				String[] params = {waitList.poll()};
 				ResultSet set = DbUtil.executeQuery(sql, params);
 				while(set.next()){
@@ -144,7 +144,10 @@ public class SceneryUtil {
 					String sid = set.getString("sid");
 					String surl = set.getString("surl");
 					String sname = set.getString("sname");
+					String ambiguitySname = set.getString("ambiguity_sname");
 					int viewCount = set.getInt("view_count");
+					double lng = set.getDouble("lng");
+					double lat = set.getDouble("lat");
 					double mapX = set.getDouble("map_x");
 					double mapY = set.getDouble("map_y");
 					double price = parsePrice(set.getString("price_desc"));
@@ -155,7 +158,10 @@ public class SceneryUtil {
 						scenery.setSid(sid);
 						scenery.setSurl(surl);
 						scenery.setSname(sname);
+						scenery.setAmbiguitySname(ambiguitySname);
 						scenery.setViewCount(viewCount);
+						scenery.setLng(lng);
+						scenery.setLat(lat);
 						scenery.setMapX(mapX);
 						scenery.setMapY(mapY);
 						scenery.setPrice(price);
@@ -193,10 +199,50 @@ public class SceneryUtil {
 		return sceneryList;
 	}
 	
+	/**
+	 * 获得一个城市对象
+	 * @param psid
+	 * @return
+	 */
+	public static Scenery getCity(String psid){
+		Scenery scenery = new Scenery();
+		try {
+			String sql = "SELECT s.sid,s.surl,s.sname,s.ambiguity_sname,s.scene_layer,s.view_count,s.lat,s.lng,s.map_x,s.map_y FROM t_scenery as s WHERE s.sid=?";
+			String[] params = {psid};
+			ResultSet set = DbUtil.executeQuery(sql, params);
+			while(set.next()){
+				String sid = set.getString("sid");
+				String surl = set.getString("surl");
+				String sname = set.getString("sname");
+				String ambiguitySname = set.getString("ambiguity_sname");
+				int viewCount = set.getInt("view_count");
+				double lng = set.getDouble("lng");
+				double lat = set.getDouble("lat");
+				double mapX = set.getDouble("map_x");
+				double mapY = set.getDouble("map_y");
+				
+				scenery.setSid(sid);
+				scenery.setSurl(surl);
+				scenery.setSname(sname);
+				scenery.setAmbiguitySname(ambiguitySname);
+				scenery.setViewCount(viewCount);
+				scenery.setLng(lng);
+				scenery.setLat(lat);
+				scenery.setMapX(mapX);
+				scenery.setMapY(mapY);
+			}
+		} catch (Exception e) {
+			scenery = null;
+			e.printStackTrace();
+		}
+		return scenery;
+	}
 	
 	public static void main(String[] args){
-//		getCityScenery("da666bc57594baeb76b3bcf0");
-		getSceneryMap("622bc401f1153f0fd41f74dd");
+//		getSceneryList("da666bc57594baeb76b3bcf0");
+		getSceneryList("622bc401f1153f0fd41f74dd");
+//		getSceneryMap("622bc401f1153f0fd41f74dd");
+//		getCity("da666bc57594baeb76b3bcf0");
 //		parsePrice("");
 	}
 
