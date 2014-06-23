@@ -412,7 +412,7 @@ public class GaScenery {
 	/**
 	 * 解决问题
 	 */
-	public void solve(){
+	public ArrayList<Route> solve(){
 		//初始化种群
 		initGroup();
 		//计算初始适度
@@ -561,7 +561,7 @@ public class GaScenery {
 		System.out.print(" 酒店:" + bestHotelIds);
 		System.out.println();
 		
-		
+		return routeList;
 	}
 	
 	
@@ -572,8 +572,18 @@ public class GaScenery {
 		GaScenery ga = new GaScenery(300, 1000, 0.8, 0.9);
 //		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
 		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
-		ga.solve();
 		
+		ArrayList<Route> routeList = ga.solve();
+		
+		for (Route route : routeList) {
+			ArrayList<Scenery> sceneList = GaSort.doRun(route.getSceneryList());
+			for (Scenery scenery : sceneList) {
+				System.out.print(scenery.getSname() + ",");
+			}
+			System.out.println("--热度：" + route.getHotness() + "--价格："+route.getSumPrice());
+		}
+		
+		System.out.println("总共：" + routeList.size() +"条路径");
 		long end = System.currentTimeMillis();
 		long time = (end - begin);
 		System.out.println();
