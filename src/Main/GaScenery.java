@@ -202,8 +202,8 @@ public class GaScenery {
 	 * @return the total distance of all chromosome's cities;
 	 */
 	private double evaluate(int index, int[] chromosome){
-		double ticketPrice = 0;//门票
-		double hotness = 0;//热度
+		double ticketPrice = 0.0;//门票
+		double hotness = 0.0;//热度
 		double days = 0.0;
 		//酒店当前染色体对应的酒店信息
 		ArrayList<Hotel> hotels = new ArrayList<Hotel>();
@@ -223,7 +223,7 @@ public class GaScenery {
 		
 		if (days <= downDay || days > upDay) {
 			recommendHotel[index] = "";
-			return 0.0000000000000000001;
+			return 0.00000000000001;
 		}
 		
 		Collections.sort(hotels);
@@ -517,6 +517,7 @@ public class GaScenery {
 		while(iter.hasNext()){
 			String key = iter.next();
 			Route route = routeMap.get(key);
+			System.out.println(route.getSname() + "--" + route.getHotness());
 			routeList.add(route);
 		}
 		
@@ -570,8 +571,8 @@ public class GaScenery {
 		HashMap<String, Hotel> hotelMap = HotelUtil.getAllHotel();
 		
 		GaScenery ga = new GaScenery(300, 1000, 0.8, 0.9);
-//		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
-		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
+		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
+//		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
 		
 		ArrayList<Route> routeList = ga.solve();
 		

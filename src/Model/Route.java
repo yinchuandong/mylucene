@@ -162,9 +162,11 @@ public class Route implements Comparable<Route>{
 		//ÄæĞò
 		if (this.hotness > o.getHotness()) {
 			return -1;
-		}else{
-			return 1;
 		}
+		if (this.hotness == o.getHotness()) {
+			return 0;
+		}
+		return 1;
 	}
 	
 	
