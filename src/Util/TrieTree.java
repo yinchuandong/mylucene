@@ -192,7 +192,7 @@ public class TrieTree {
 		System.out.println("-----------------");
 		long begin = System.currentTimeMillis();
 		
-		String result = TrieTree.doSearch("广州科技", "E:\\traveldata\\keyword");
+		String result = TrieTree.doSearch("广州", "E:\\traveldata\\keyword");
 		System.out.println(result);
 		
 		long end = System.currentTimeMillis();

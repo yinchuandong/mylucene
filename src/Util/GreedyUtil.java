@@ -154,7 +154,7 @@ public class GreedyUtil {
 				}
 			}
 			k++;
-			codeStr = codeStr.substring(0, codeStr.length() - 1) + "\r\n";
+//			codeStr = codeStr.substring(0, codeStr.length() - 1) + "\r\n";
 			System.out.print(codeStr);
 		}
 		

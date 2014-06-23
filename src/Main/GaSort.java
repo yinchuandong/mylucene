@@ -465,6 +465,15 @@ public class GaSort {
 		
 	}
 	
+	
+	/**
+	 * 获得最短长度
+	 * @return
+	 */
+	public double getBestLen() {
+		return bestLen;
+	}
+
 	/**
 	 * 默认进行排序的函数
 	 * @param sceneList

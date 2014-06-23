@@ -4,21 +4,22 @@ import java.util.ArrayList;
 
 public class Route implements Comparable<Route>{
 	
-	private String uid;
+	private String uid;//唯一标示路径
 	private String sid;
 	private String surl;
 	private String sname;
 	private String ambiguitySname;
-	private double visitDay;
-	private double upDay;
-	private double downDay;
-	private double hotness;
-	private int viewCount;
-	private ArrayList<Scenery> sceneryList;
-	private ArrayList<Hotel> hotelList;
-	private double sumPrice;
-	private double sceneTicket;
-	private double hotelPrice;
+	private double visitDay;//实际需要访问的天数
+	private double upDay;//天数上限
+	private double downDay;//天数下限
+	private double hotness;//热度
+	private int viewCount;//总的访问量
+	private ArrayList<Scenery> sceneryList;//景点的列表
+	private ArrayList<Hotel> hotelList;//酒店的列表
+	private double sumPrice;//酒店和门票价格的和
+	private double sceneTicket;//门票间隔
+	private double hotelPrice;//酒店价格
+	private double distance;//路线的总长度
 	
 	public Route(){
 		sceneryList = new ArrayList<Scenery>();
@@ -149,6 +150,16 @@ public class Route implements Comparable<Route>{
 	public void setHotelPrice(double hotelPrice) {
 		this.hotelPrice = hotelPrice;
 	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
 
 	@Override
 	public boolean equals(Object obj) {

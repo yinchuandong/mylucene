@@ -7,6 +7,8 @@ public class Scenery {
 	private String sname;
 	private String ambiguitySname;
 	private String parentSid;
+	private String moreDesc;
+	private String fullUrl;
 	private int viewCount;
 	private double lng;
 	private double lat;
@@ -44,6 +46,18 @@ public class Scenery {
 	}
 	public void setParentSid(String parentSid) {
 		this.parentSid = parentSid;
+	}
+	public String getMoreDesc() {
+		return moreDesc;
+	}
+	public void setMoreDesc(String moreDesc) {
+		this.moreDesc = moreDesc;
+	}
+	public String getFullUrl() {
+		return fullUrl;
+	}
+	public void setFullUrl(String fullUrl) {
+		this.fullUrl = fullUrl;
 	}
 	public int getViewCount() {
 		return viewCount;

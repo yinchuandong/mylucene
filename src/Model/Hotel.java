@@ -11,6 +11,11 @@ public class Hotel implements Comparable<Hotel>{
 
 	private String sid;
 	private String uid;
+	private String hotelName;
+	private String hotelAddress;
+	private String phone;
+	private String pic;
+	private double commentScore;
 	private double mapX;
 	private double mapY;
 	private double price;
@@ -27,6 +32,38 @@ public class Hotel implements Comparable<Hotel>{
 	}
 	public void setUid(String uid) {
 		this.uid = uid;
+	}
+	
+	public String getHotelName() {
+		return hotelName;
+	}
+	public void setHotelName(String hotelName) {
+		this.hotelName = hotelName;
+	}
+	
+	public String getHotelAddress() {
+		return hotelAddress;
+	}
+	public void setHotelAddress(String hotelAddress) {
+		this.hotelAddress = hotelAddress;
+	}
+	public String getPhone() {
+		return phone;
+	}
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+	public String getPic() {
+		return pic;
+	}
+	public void setPic(String pic) {
+		this.pic = pic;
+	}
+	public double getCommentScore() {
+		return commentScore;
+	}
+	public void setCommentScore(double commentScore) {
+		this.commentScore = commentScore;
 	}
 	public double getMapX() {
 		return mapX;

@@ -2,8 +2,11 @@ package Util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -90,6 +93,17 @@ public class AppUtil {
 			} 
 		} 
 		return strRet; 
+	}
+	
+	public static void exportFile(String dirPath, String pageContent){
+		try {
+			FileOutputStream outputStream = new FileOutputStream(new File(dirPath));
+			PrintWriter writer = new PrintWriter(outputStream);
+			writer.write(pageContent);
+			writer.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException{

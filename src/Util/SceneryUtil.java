@@ -14,6 +14,10 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
+import Model.Route;
 import Model.Scenery;
 
 public class SceneryUtil {
@@ -136,7 +140,7 @@ public class SceneryUtil {
 		waitList.add(cityId);
 		try {
 			while(!waitList.isEmpty()){
-				String sql = "SELECT s.sid,s.surl,s.sname,s.ambiguity_sname,s.scene_layer,s.view_count,s.lat,s.lng,s.map_x,s.map_y,s.price_desc,s.recommend_visit_time FROM t_scenery as s WHERE s.parent_sid=?";
+				String sql = "SELECT s.sid,s.surl,s.sname,s.ambiguity_sname,s.scene_layer,s.view_count,s.lat,s.lng,s.map_x,s.map_y,s.price_desc,s.recommend_visit_time,s.more_desc,s.full_url FROM t_scenery as s WHERE s.parent_sid=?";
 				String[] params = {waitList.poll()};
 				ResultSet set = DbUtil.executeQuery(sql, params);
 				while(set.next()){
@@ -145,6 +149,8 @@ public class SceneryUtil {
 					String surl = set.getString("surl");
 					String sname = set.getString("sname");
 					String ambiguitySname = set.getString("ambiguity_sname");
+					String moreDesc = set.getString("more_desc");
+					String fullUrl = set.getString("full_url");
 					int viewCount = set.getInt("view_count");
 					double lng = set.getDouble("lng");
 					double lat = set.getDouble("lat");
@@ -159,6 +165,8 @@ public class SceneryUtil {
 						scenery.setSurl(surl);
 						scenery.setSname(sname);
 						scenery.setAmbiguitySname(ambiguitySname);
+						scenery.setMoreDesc(moreDesc);
+						scenery.setFullUrl(fullUrl);
 						scenery.setViewCount(viewCount);
 						scenery.setLng(lng);
 						scenery.setLat(lat);
@@ -166,11 +174,11 @@ public class SceneryUtil {
 						scenery.setMapY(mapY);
 						scenery.setPrice(price);
 						scenery.setVisitDay(visitDay);
-						System.out.println(sname+":"+price);
+//						System.out.println(sname+":"+price);
 						result.put(sid, scenery);
 					}else{
 						waitList.offer(sid);
-						System.err.println(sname+":加入队列");
+//						System.err.println(sname+":加入队列");
 					}
 				}
 			}
@@ -234,8 +242,68 @@ public class SceneryUtil {
 		} catch (Exception e) {
 			scenery = null;
 			e.printStackTrace();
+		} finally{
+			DbUtil.close();
 		}
 		return scenery;
+	}
+	
+	/**
+	 * 将计算结果保存到文件夹中
+	 * @param routeList
+	 * @param dirPath
+	 */
+	public static void saveRoutes(ArrayList<Route> routeList, String dirPath){
+		File dir = new File(dirPath);
+		if (!dir.exists()) {
+			dir.mkdirs();
+		}
+		for (int i = 0; i < routeList.size(); i++) {
+			Route route  = routeList.get(i);
+			JSONObject rootObj = JSONObject.fromObject(route);
+			//
+			rootObj.put("arrange", arrangeRoute(route.getSceneryList(), route.getUpDay()));
+			JSONArray sceneArr = rootObj.getJSONArray("sceneryList");
+			for (int j = 0; j < sceneArr.size(); j++) {
+				JSONObject sceneObj = sceneArr.getJSONObject(j);
+				sceneObj.put("recommendHotel", HotelUtil.getSceneHotel(sceneObj.getString("sid")));
+			}
+			String filename = i +"_" + route.getUid() + ".txt";
+			AppUtil.exportFile(dirPath + "\\" + filename, rootObj.toString());
+//			System.out.println(rootObj.toString());
+					
+		}
+	}
+	/**
+	 * 获得整个路程的安排，将整个路程切分为按天计算
+	 * @param sceneList
+	 * @param upDay 几天游
+	 */
+	private static JSONArray arrangeRoute(ArrayList<Scenery> sceneList, double upDay){
+		JSONArray allDaysArr = JSONArray.fromObject("[]");
+		double tmpDays = 0.0;
+		int curDay = 1;
+		ArrayList<Scenery> tmpList = new ArrayList<Scenery>();
+		for (Scenery scenery : sceneList) {
+			tmpDays += scenery.getVisitDay();
+			tmpList.add(scenery);
+			if (tmpDays >= 1.0 || upDay <= 1.0) {
+				tmpDays -= 1.0;
+				JSONObject daysObj = JSONObject.fromObject("{}");
+				JSONArray daysArr = JSONArray.fromObject(tmpList);
+				daysObj.put("list", daysArr);
+				daysObj.put("curDay", "第" + curDay + "天");
+				allDaysArr.add(daysObj);
+				
+				tmpList.clear();
+				curDay ++;
+				//一天玩不完，第二天继续玩
+				if (tmpDays >= 0.3) {
+					tmpList.add(scenery);
+				}
+			}
+		}
+		return allDaysArr;
 	}
 	
 	public static void main(String[] args){

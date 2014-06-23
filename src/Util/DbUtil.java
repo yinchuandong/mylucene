@@ -43,13 +43,16 @@ public class DbUtil {
 //		}
 //		close(null, null, getConnection());
 	}
-	
+	//连接
+	private static java.sql.Connection conn = null;
 	/**
 	 * 打开数据库连接
 	 * @return
 	 */
 	public static Connection getConnection(){
-		java.sql.Connection conn = null;
+		if (conn != null) {
+			return conn;
+		}
 		try {
 			com.mysql.jdbc.Driver jdbcDriver = new com.mysql.jdbc.Driver();
 			DriverManager.registerDriver(jdbcDriver);
@@ -97,6 +100,7 @@ public class DbUtil {
 				e.printStackTrace();
 			}
 		}
+		conn = null;
 	}
 	
 	/**
