@@ -125,8 +125,10 @@ public class GreedyUtil {
 			}
 		}else{
 			int len = routeList.size();
-			for (int i = 0; i < scale; i++) {
-				sortedList.add(routeList.get(i % len));
+			if (len != 0) {
+				for (int i = 0; i < scale; i++) {
+					sortedList.add(routeList.get(i % len));
+				}
 			}
 		}
 		

@@ -16,18 +16,25 @@ public class HotelUtil {
 	public static HashMap<String, Hotel> getAllHotel(){
 		HashMap<String, Hotel> result = new HashMap<String, Hotel>();
 		
-		String sql = "SELECT b.sid, b.uid, b.hotel_name, AVG(b.price) as min_price FROM t_baiduhotel as b GROUP BY b.sid";
+		String sql = "SELECT b.sid, b.uid, b.hotel_name, b.hotel_address, b.phone, b.pic, MIN(b.price) as min_price FROM t_baiduhotel as b GROUP BY b.sid";
 		ResultSet set = DbUtil.executeQuery(sql, null);
 		try {
 			while(set.next()){
 				String sid = set.getString("sid");
 				String uid = set.getString("uid");
 				String hotelName = set.getString("hotel_name");
+				String hotelAddress = set.getString("hotel_address");
+				String phone = set.getString("phone");
+				String pic = set.getString("pic");
 				double price = set.getDouble("min_price");
+				price = (price < 80.0) ? 80.0 : price;
 				Hotel hotel = new Hotel();
 				hotel.setSid(sid);
 				hotel.setUid(uid);
 				hotel.setHotelName(hotelName);
+				hotel.setHotelAddress(hotelAddress);
+				hotel.setPhone(phone);
+				hotel.setPic(pic);
 				hotel.setPrice(price);
 				result.put(sid, hotel);
 			}

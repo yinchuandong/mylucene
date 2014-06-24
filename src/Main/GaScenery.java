@@ -158,8 +158,9 @@ public class GaScenery {
 	 * @param downDay 天数下限，开区间
 	 * @param upDay 天数上限，闭区间
 	 * @param hotelMap 酒店的信息
+	 * @throws Exception 
 	 */
-	public void init(String cityId, double downDay, double upDay, HashMap<String, Hotel> hotelMap){
+	public void init(String cityId, double downDay, double upDay, HashMap<String, Hotel> hotelMap) throws Exception{
 		this.cityId = cityId;
 		this.downDay = downDay;
 		this.upDay = upDay;
@@ -168,6 +169,9 @@ public class GaScenery {
 		this.sceneryList = SceneryUtil.getSceneryList(cityId);
 		
 		this.sceneryNum = this.sceneryList.size();
+		if (sceneryNum < 2) {
+			throw new Exception("景点的个数为" + sceneryNum +"，不符合，其id为：" + cityId);
+		}
 		
 		this.bestLen = Integer.MIN_VALUE;
 		this.bestGen = 0;
@@ -421,7 +425,7 @@ public class GaScenery {
 		// 计算初始化种群中各个个体的累积概率，pi[max]
 		countRate();
 		
-		System.out.println("初始种群...");
+		System.out.println("gascenery 初始种群...");
 		
 		//开始进化
 		for (curGen = 0; curGen < maxGen; curGen++) {
@@ -444,7 +448,7 @@ public class GaScenery {
 		
 		selectBestGh();
 		
-		System.out.println("最后种群");
+		System.out.println("gasecnery 最后种群");
 		HashMap<String, Route> routeMap = new HashMap<String, Route>();
 		//获得城市对象
 		Scenery city = SceneryUtil.getCity(cityId);
@@ -516,8 +520,11 @@ public class GaScenery {
 		while(iter.hasNext()){
 			String key = iter.next();
 			Route route = routeMap.get(key);
+			//至少两个景点才能算一个路径
+			if(route.getSceneryList().size() >= 2){
+				routeList.add(route);
+			}
 //			System.out.println(route.getSname() + "--" + route.getHotness());
-			routeList.add(route);
 		}
 		
 		Collections.sort(routeList);
@@ -565,28 +572,33 @@ public class GaScenery {
 	}
 	
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws Exception{
 		long begin = System.currentTimeMillis();
 		HashMap<String, Hotel> hotelMap = HotelUtil.getAllHotel();
 		
 		GaScenery ga = new GaScenery(300, 1000, 0.8, 0.9);
-		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
+//		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
 //		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
+		ga.init("1c41ec5be32fd14cfbe36df6",2.0, 3.0, hotelMap);
 		
 		ArrayList<Route> routeList = ga.solve();
 		
 		for (Route route : routeList) {
-//			ArrayList<Scenery> sceneList = GaSort.doRun(route.getSceneryList());
-			GaSort gaSort = new GaSort(30, 100, 0.8, 0.9);
-			gaSort.init(route.getSceneryList());
-			ArrayList<Scenery> sceneList = gaSort.solve();
-			route.setSceneryList(sceneList);//将排好序的对象重新加入route中
-			route.setDistance(gaSort.getBestLen());//记录最短的路径值
-			for (Scenery scenery : sceneList) {
-				System.out.print(scenery.getSname() + ",");
+			try {
+				GaSort gaSort = new GaSort(30, 100, 0.8, 0.9);
+				gaSort.init(route.getSceneryList());
+				ArrayList<Scenery> sceneList = gaSort.solve();
+				route.setSceneryList(sceneList);//将排好序的对象重新加入route中
+				route.setDistance(gaSort.getBestLen());//记录最短的路径值
+				for (Scenery scenery : sceneList) {
+					System.out.print(scenery.getSname() + ",");
+				}
+				System.out.println("--热度：" + route.getHotness() + "--价格："+route.getSumPrice() + "--长度："+gaSort.getBestLen());
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			System.out.println("--热度：" + route.getHotness() + "--价格："+route.getSumPrice() + "--长度："+gaSort.getBestLen());
 		}
+		
 		SceneryUtil.saveRoutes(routeList, "E:\\traveldata\\routes\\" + routeList.get(0).getSurl());
 		
 		System.out.println("总共：" + routeList.size() +"条路径");

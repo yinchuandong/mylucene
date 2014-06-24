@@ -88,9 +88,11 @@ public class Hotel implements Comparable<Hotel>{
 	public int compareTo(Hotel o) {
 		if (this.getPrice() > o.getPrice()) {
 			return 1;
-		}else{
-			return -1;
 		}
+		if (this.getPrice() == o.getPrice()) {
+			return 0;
+		}
+		return -1;
 	}
 	
 	

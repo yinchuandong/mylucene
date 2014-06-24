@@ -268,7 +268,7 @@ public class SceneryUtil {
 				JSONObject sceneObj = sceneArr.getJSONObject(j);
 				sceneObj.put("recommendHotel", HotelUtil.getSceneHotel(sceneObj.getString("sid")));
 			}
-			String filename = i +"_" + route.getUid() + ".txt";
+			String filename = (int)route.getUpDay() + "_" + i +"_" + route.getUid() + ".json";
 			AppUtil.exportFile(dirPath + "\\" + filename, rootObj.toString());
 //			System.out.println(rootObj.toString());
 					
@@ -292,6 +292,7 @@ public class SceneryUtil {
 				JSONObject daysObj = JSONObject.fromObject("{}");
 				JSONArray daysArr = JSONArray.fromObject(tmpList);
 				daysObj.put("list", daysArr);
+				daysObj.put("hotel", HotelUtil.getSceneHotel(scenery.getSid()));
 				daysObj.put("curDay", "µÚ" + curDay + "Ìì");
 				allDaysArr.add(daysObj);
 				

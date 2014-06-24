@@ -116,8 +116,9 @@ public class GaSort {
 	/**
 	 * 初始化算法，从file中加载数据文件
 	 * @param filename
+	 * @throws Exception 
 	 */
-	public void init(ArrayList<Scenery> cityList){
+	public void init(ArrayList<Scenery> cityList) throws Exception{
 		this.cityList = cityList;
 		ArrayList<Double> x = new ArrayList<Double>();
 		ArrayList<Double> y = new ArrayList<Double>();
@@ -127,6 +128,9 @@ public class GaSort {
 		}
 		
 		this.cityNum = this.cityList.size();
+		if (this.cityNum < 2) {
+			throw new Exception("gasort cityNum 不能为小于2");
+		}
 		this.distance = new double[cityNum][cityNum];
 		
 		//通过欧式距离计算距离矩阵
@@ -424,7 +428,7 @@ public class GaSort {
 		// 计算初始化种群中各个个体的累积概率，pi[max]
 		countRate();
 		
-		System.out.println("初始种群...");
+		System.out.println("gasort初始种群...");
 		
 		//开始进化
 		for (curGen = 0; curGen < maxGen; curGen++) {
@@ -447,6 +451,7 @@ public class GaSort {
 		
 		selectBestGh();
 		
+		System.out.println("gasort 进化完毕");
 //		System.out.println("最佳长度出现代数：");
 //		System.out.println(bestGen);
 //		System.out.println("最佳长度");
@@ -478,8 +483,9 @@ public class GaSort {
 	 * 默认进行排序的函数
 	 * @param sceneList
 	 * @return
+	 * @throws Exception 
 	 */
-	public static ArrayList<Scenery> doRun(ArrayList<Scenery> sceneList){
+	public static ArrayList<Scenery> doRun(ArrayList<Scenery> sceneList) throws Exception{
 		GaSort ga = new GaSort(30, 100, 0.8, 0.9);
 		ga.init(sceneList);
 		return ga.solve();
