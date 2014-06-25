@@ -45,7 +45,7 @@ public class MainRoutes {
 				e.printStackTrace();
 			}
 		}
-		SceneryUtil.saveRoutes(routeList, "E:\\traveldata\\routes\\" + routeList.get(0).getSurl());
+		SceneryUtil.saveRoutes(routeList, "E:\\traveldata\\routes" + (int)upDay +"\\" + routeList.get(0).getSurl());
 		
 		System.out.println("总共：" + routeList.size() +"条路径");
 		long end = System.currentTimeMillis();
@@ -54,13 +54,13 @@ public class MainRoutes {
 		System.out.println("耗时："+ time +" ms");
 	}
 	
-	private static void run() throws IOException{
+	private static void parseRoute(double downDay, double upDay) throws IOException{
 		BufferedReader reader = new BufferedReader(new FileReader(new File("./city_id.txt")));
 		String buff = null;
 		int i = 0;
 		while((buff = reader.readLine()) != null){
 			try {
-				caluate(buff, 3.0, 4.0);
+				caluate(buff, downDay, upDay);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -72,8 +72,8 @@ public class MainRoutes {
 	public static void main(String[] args){
 		try {
 			long begin = System.currentTimeMillis();
-			run();
-			
+			parseRoute(3.0, 4.0);
+			parseRoute(4.0, 5.0);
 			long end = System.currentTimeMillis();
 			long time = (end - begin);
 			System.out.println();

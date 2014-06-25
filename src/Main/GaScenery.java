@@ -247,7 +247,13 @@ public class GaScenery {
 				hotelPrice += hotels.get(0).getPrice();
 				hotelIds += hotels.get(0).getSid() + ",";
 			}
+		}else{
+			//当该景点没有酒店的时候，默认80块
+			for (int i = 0; i < (int)downDay; i++) {
+				hotelPrice += 80.0;
+			}
 		}
+		
 		if (!hotelIds.equals("")) {
 			hotelIds = hotelIds.substring(0, hotelIds.length() - 1);
 		}

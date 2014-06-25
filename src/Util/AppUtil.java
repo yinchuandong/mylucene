@@ -97,9 +97,9 @@ public class AppUtil {
 	
 	public static void exportFile(String dirPath, String pageContent){
 		try {
-			FileOutputStream outputStream = new FileOutputStream(new File(dirPath));
-			PrintWriter writer = new PrintWriter(outputStream);
+			PrintWriter writer = new PrintWriter(new File(dirPath));
 			writer.write(pageContent);
+			writer.flush();
 			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
