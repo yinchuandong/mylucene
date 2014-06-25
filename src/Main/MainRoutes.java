@@ -60,7 +60,7 @@ public class MainRoutes {
 		int i = 0;
 		while((buff = reader.readLine()) != null){
 			try {
-				caluate(buff, 2.0, 3.0);
+				caluate(buff, 3.0, 4.0);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

@@ -107,15 +107,17 @@ public class AppUtil {
 	}
 	
 	public static void main(String[] args) throws UnsupportedEncodingException{
-//		File dir = new File("E:\\web");
+		File dir = new File("E:\\traveldata\\routes\\anhuifuyang\\4_0_d9299d6e773e52ac46169c39517aaa.json");
 //		File[] files = dir.listFiles();
 //		for (int i = 0; i < 1; i++) {
 //			File file = files[i];
-//			String content = FileUtil.readFile(file);
+//			String content = readFile(file);
 //			System.out.println(content);
 //		}
+		String content = readFile(dir);
+		System.out.println(toUnicode(content));
 		
-		System.out.println(toUnicode("°×ÔÆÉ½"));
+//		System.out.println(toUnicode("°×ÔÆÉ½"));
 		
 	}
 }

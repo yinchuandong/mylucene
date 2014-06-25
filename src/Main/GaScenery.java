@@ -245,7 +245,7 @@ public class GaScenery {
 			int span = (int)(downDay - hotels.size());
 			for (int i = 0; i < span; i++) {
 				hotelPrice += hotels.get(0).getPrice();
-				hotelIds += hotels.get(i).getSid() + ",";
+				hotelIds += hotels.get(0).getSid() + ",";
 			}
 		}
 		if (!hotelIds.equals("")) {
@@ -485,7 +485,7 @@ public class GaScenery {
 				}
 			}
 			
-			String uid = AppUtil.md5(tmpR);
+			String uid = AppUtil.md5(tmpR + this.upDay);
 			String sid = city.getSid();
 			String ambiguitySname = city.getAmbiguitySname();
 			String sname = city.getSname();
