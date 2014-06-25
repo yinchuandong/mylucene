@@ -14,11 +14,12 @@ public class EncodeConventer {
 		}
 		
 		File[] files = dir.listFiles();
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
-			String content = AppUtil.readFile(dir);
+			String content = AppUtil.readFile(file);
 			content = AppUtil.toUnicode(content);
 			AppUtil.exportFile(expDir + "\\" + file.getName(), content);
+			System.out.println(content);
 			System.out.println("处理完第" + i +"个");
 		}
 		
