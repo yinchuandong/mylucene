@@ -3,12 +3,9 @@ package Ui;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Collections;
-
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
-import org.apache.lucene.document.FieldType;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
@@ -22,12 +19,10 @@ import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.store.Directory;
-import org.apache.lucene.store.RAMDirectory;
 import org.apache.lucene.store.SimpleFSDirectory;
 import org.apache.lucene.util.Version;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
-import org.wltea.analyzer.dic.Hit;
 import org.wltea.analyzer.lucene.IKAnalyzer;
 
 /**
@@ -135,19 +130,18 @@ public class TestIkAnalyzer {
 			iReader = IndexReader.open(directory);
 			iSeacher = new IndexSearcher(iReader);
 			
-			Term t1 = new Term("sname","长隆");
-			Term t2 = new Term("sname", "世界");
-			Query q1 = new TermQuery(t1);
-			Query q2 = new TermQuery(t2);
-			BooleanQuery booleanQuery = new BooleanQuery();
-			booleanQuery.add(q1, BooleanClause.Occur.MUST);
-			booleanQuery.add(q2, BooleanClause.Occur.MUST);
+//			Term t1 = new Term("ambiguity_sname","广州");
+//			Term t2 = new Term("ambiguity_sname", "白云山");
+//			Query q1 = new TermQuery(t1);
+//			Query q2 = new TermQuery(t2);
+//			BooleanQuery booleanQuery = new BooleanQuery();
+//			booleanQuery.add(q1, BooleanClause.Occur.MUST);
+//			booleanQuery.add(q2, BooleanClause.Occur.MUST);
+//			TopDocs topDocs = iSeacher.search(booleanQuery, 10);
 			
-//			Term t3 = new Term("sname","长隆");
-//			Query q3 = new TermQuery(t3);
-//			TopDocs topDocs = iSeacher.search(q3, 10);
-			
-			TopDocs topDocs = iSeacher.search(booleanQuery, 10);
+			Term t3 = new Term("ambiguity_sname","白云山");
+			Query q3 = new TermQuery(t3);
+			TopDocs topDocs = iSeacher.search(q3, 10);
 			
 			System.out.println("hit: " + topDocs.totalHits);
 			ScoreDoc[] scoreDocs = topDocs.scoreDocs;
@@ -188,7 +182,7 @@ public class TestIkAnalyzer {
 	 * @throws IOException
 	 */
 	public void testSegment() throws IOException{
-		String str = "广州长隆欢乐世界白毛女，从那时起，by a time 我就不是坏人了" ; 
+		String str = "内江白云山" ; 
 	    StringReader reader = new StringReader(str); 
 	    IKSegmenter ik = new IKSegmenter(reader,false);//当为true时，分词器进行最大词长切分 
 	    Lexeme lexeme = null; 

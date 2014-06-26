@@ -13,7 +13,7 @@ public class FileUtil {
 
 	
 	/**
-	 * Х╞╩Е▐√Ф√┤Д╩╤
+	 * ╤ах║нд╪Ч
 	 * @param file
 	 * @return
 	 */
