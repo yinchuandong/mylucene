@@ -129,15 +129,17 @@ public class TestIkAnalyzer {
 		try{
 			iReader = IndexReader.open(directory);
 			iSeacher = new IndexSearcher(iReader);
+			Term t1 = new Term("sname","白云");
+			Term t2 = new Term("sname", "云山");
+			Query q1 = new TermQuery(t1);
+			Query q2 = new TermQuery(t2);
+			BooleanQuery booleanQuery = new BooleanQuery();
+			booleanQuery.add(q1, BooleanClause.Occur.MUST);
+			booleanQuery.add(q2, BooleanClause.Occur.MUST);
 			
-//			Term t1 = new Term("ambiguity_sname","广州");
-//			Term t2 = new Term("ambiguity_sname", "白云山");
-//			Query q1 = new TermQuery(t1);
-//			Query q2 = new TermQuery(t2);
-//			BooleanQuery booleanQuery = new BooleanQuery();
-//			booleanQuery.add(q1, BooleanClause.Occur.MUST);
-//			booleanQuery.add(q2, BooleanClause.Occur.MUST);
-//			TopDocs topDocs = iSeacher.search(booleanQuery, 10);
+//			Term t3 = new Term("sname","长隆");
+//			Query q3 = new TermQuery(t3);
+//			TopDocs topDocs = iSeacher.search(q3, 10);
 			
 			Term t3 = new Term("ambiguity_sname","白云山");
 			Query q3 = new TermQuery(t3);

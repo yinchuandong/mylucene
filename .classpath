@@ -12,9 +12,6 @@
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/commons-logging-1.1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/ezmorph-1.0.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="libs/json2.4/json-lib-2.4-jdk15.jar"/>
-	<classpathentry kind="lib" path="E:/Courseware/senior3_2/Datamining for travel/mylucene/libs/mysqldriver.jar"/>
-	<classpathentry kind="lib" path="E:/Courseware/senior3_2/Datamining for travel/mylucene/libs/IKAnalyzer2012FF_u1.jar"/>
-	<classpathentry kind="lib" path="E:/Courseware/senior3_2/Datamining for travel/mylucene/libs/jedis-2.0.0.jar"/>
-	<classpathentry kind="lib" path="E:/Courseware/senior3_2/Datamining for travel/mylucene/libs/lucene-core-4.8.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="libs/mysqldriver.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
