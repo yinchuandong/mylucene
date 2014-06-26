@@ -72,8 +72,9 @@ public class MainRoutes {
 	public static void main(String[] args){
 		try {
 			long begin = System.currentTimeMillis();
-			parseRoute(3.0, 4.0);
-			parseRoute(4.0, 5.0);
+			parseRoute(1.0, 2.0);
+//			parseRoute(3.0, 4.0);
+//			parseRoute(4.0, 5.0);
 			long end = System.currentTimeMillis();
 			long time = (end - begin);
 			System.out.println();
