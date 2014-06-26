@@ -58,9 +58,8 @@ public class EncodeConventer {
 	
 	public static void main(String[] args){
 		long begin = System.currentTimeMillis();
-		
-//		run();
-		encodeScenery();
+		run();
+//		encodeScenery();
 		
 		long end = System.currentTimeMillis();
 		long time = (end - begin);

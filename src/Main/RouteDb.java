@@ -1,6 +1,11 @@
 package Main;
 
+import java.io.File;
+
+import net.sf.json.JSONObject;
+
 import Model.Route;
+import Util.AppUtil;
 import Util.DbUtil;
 
 public class RouteDb {
@@ -36,7 +41,10 @@ public class RouteDb {
 	}
 	
 	public static void run(){
-		
+		File file = new File("E:\\traveldata\\routes3\\aba\\3_0_fec47b2ba8e87c16a9e39a048936c.json");
+		String content = AppUtil.readFile(file);
+		JSONObject rootObj = JSONObject.fromObject(content);
+		String uid = rootObj.getString("");
 	}
 	
 	public static void main(String[] args){
