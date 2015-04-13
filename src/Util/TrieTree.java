@@ -30,7 +30,27 @@ import Util.AppUtil;
  * 测试trie树，用于搜索的提示模块
  * @author yinchuandong
  *
- */
+					   _ooOoo_
+					  o8888888o
+					  88" . "88
+					  (| -_- |)
+					  O\  =  /O
+				   ____/`---'\____
+				 .'  \\|     |//  `.
+				/  \\|||  :  |||//  \
+			   /  _||||| -:- |||||-  \
+			   |   | \\\  -  /// |   |
+			   | \_|  ''\---/''  |   |
+			   \  .-\__  `-`  ___/-. /
+			  ___`. .'  /--.--\  `. . __
+		   ."" '<  `.___\_<|>_/___.'  >'"".
+		  | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+		  \  \ `-.   \_ __\ /__ _/   .-` /  /
+	 ======`-.____`-.___\_____/___.-`____.-'======
+					    `=---='
+	 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+				  佛祖保佑       永无BUG
+*/
 public class TrieTree {
 
 	private TrieNode root = null;
@@ -133,7 +153,7 @@ public class TrieTree {
 	 * @return
 	 */
 	public static String doSearch(String keyWord, String dirpath){
-		JSONObject resultObj = JSONObject.fromObject("{}");;
+		JSONObject resultObj = JSONObject.fromObject("{}");
 		if (keyWord == null || keyWord.length() <1) {
 			resultObj.put("info", AppUtil.toUnicode("关键字不合法"));
 			resultObj.put("status", "0");
@@ -159,6 +179,11 @@ public class TrieTree {
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
+			resultObj.put("info", AppUtil.toUnicode("服务器错误"));
+			resultObj.put("status", "0");
+			resultObj.put("data", JSONArray.fromObject("[]"));
+			return resultObj.toString().replaceAll("\\\\u", "\\u");
+		} finally{
 			try{
 				if (reader != null) {
 					reader.close();
@@ -166,10 +191,6 @@ public class TrieTree {
 			}catch (Exception ex){
 				ex.printStackTrace();
 			}
-			resultObj.put("info", AppUtil.toUnicode("服务器错误"));
-			resultObj.put("status", "0");
-			resultObj.put("data", JSONArray.fromObject("[]"));
-			return resultObj.toString().replaceAll("\\\\u", "\\u");
 		}
 		
 		ArrayList<Sentence> list = tree.find(keyWord);
@@ -192,7 +213,7 @@ public class TrieTree {
 		System.out.println("-----------------");
 		long begin = System.currentTimeMillis();
 		
-		String result = TrieTree.doSearch("广州", "E:\\traveldata\\keyword");
+		String result = TrieTree.doSearch("广州", "keyword");
 		System.out.println(result);
 		
 		long end = System.currentTimeMillis();

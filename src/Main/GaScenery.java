@@ -418,6 +418,8 @@ public class GaScenery {
 		newPopulation[k][index] = getRandomNum() % 2;
 	}
 	
+	double lastFitness = 0.0;
+	
 	/**
 	 * 解决问题
 	 */
@@ -444,12 +446,18 @@ public class GaScenery {
 			}
 			
 			//计算当前代的适度
+			double curFitness = 0.0;
 			for (int i = 0; i < scale; i++) {
 				fitness[i] = this.evaluate(i, oldPopulation[i]);
+				curFitness += fitness[i];
 			}
 			
 			// 计算当前种群中各个个体的累积概率，pi[max]
 			countRate();
+			if(this.lastFitness > curFitness){
+				System.out.println("curGen of curfintess: " + this.curGen + "-" + this.maxGen);
+			}
+			this.lastFitness = curFitness;
 		}
 		
 		selectBestGh();
@@ -537,39 +545,39 @@ public class GaScenery {
 		
 		
 		//------------------------------------
-//		System.out.println("最佳长度出现代数：");
-//		System.out.println(bestGen);
-//		System.out.println("最佳长度");
-//		System.out.println(bestLen);
-//		System.out.println("最佳酒店：");
-//		System.out.println(bestHotelIds);
-//		System.out.println("最佳路径：");
-//		for (int i = 0; i < sceneryNum; i++) {
-//			System.out.print(bestRoute[i] + ",");
-//		}
-//		System.out.println();
-//		double price = 0.0;
-//		double hotness = 0.0;
-//		double days = 0.0;
-//		for (int i = 0; i < sceneryNum; i++) {
-//			if (bestRoute[i] == 1) {
-//				Scenery scene = sceneryList.get(i);
-//				price += scene.getPrice();
-//				hotness += scene.getViewCount();
-//				days += scene.getVisitDay();
-//				System.out.print(scene.getSname() + ",");
-//			}
-//		}
-//		if (!bestHotelIds.equals("")) {
-//			System.out.println();
-//			System.out.println("景点花费：" + price +" 元");
-//			String[] hotelArr = bestHotelIds.split(",");
-//			for (String sid : hotelArr) {
-//				Hotel hotel = hotelMap.get(sid);
-//				price += hotel.getPrice();
-//				System.out.println("酒店：" + sid + "-" + hotel.getPrice() + "元");
-//			}
-//		}
+		System.out.println("最佳长度出现代数：");
+		System.out.println(bestGen);
+		System.out.println("最佳长度");
+		System.out.println(bestLen);
+		System.out.println("最佳酒店：");
+		System.out.println(bestHotelIds);
+		System.out.println("最佳路径：");
+		for (int i = 0; i < sceneryNum; i++) {
+			System.out.print(bestRoute[i] + ",");
+		}
+		System.out.println();
+		double price = 0.0;
+		double hotness = 0.0;
+		double days = 0.0;
+		for (int i = 0; i < sceneryNum; i++) {
+			if (bestRoute[i] == 1) {
+				Scenery scene = sceneryList.get(i);
+				price += scene.getPrice();
+				hotness += scene.getViewCount();
+				days += scene.getVisitDay();
+				System.out.print(scene.getSname() + ",");
+			}
+		}
+		if (!bestHotelIds.equals("")) {
+			System.out.println();
+			System.out.println("景点花费：" + price +" 元");
+			String[] hotelArr = bestHotelIds.split(",");
+			for (String sid : hotelArr) {
+				Hotel hotel = hotelMap.get(sid);
+				price += hotel.getPrice();
+				System.out.println("酒店：" + sid + "-" + hotel.getPrice() + "元");
+			}
+		}
 //		System.out.print("  天数：" + days + " --价格：" + price + " --热度:" + hotness);
 //		System.out.print(" 酒店:" + bestHotelIds);
 //		System.out.println();
@@ -583,29 +591,29 @@ public class GaScenery {
 		HashMap<String, Hotel> hotelMap = HotelUtil.getAllHotel();
 		
 		GaScenery ga = new GaScenery(300, 1000, 0.8, 0.9);
-//		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
+		ga.init("da666bc57594baeb76b3bcf0",2.0, 3.0, hotelMap);
 //		ga.init("622bc401f1153f0fd41f74dd",2.0, 3.0, hotelMap);
-		ga.init("1c41ec5be32fd14cfbe36df6",2.0, 3.0, hotelMap);
+//		ga.init("1c41ec5be32fd14cfbe36df6",2.0, 3.0, hotelMap);
 		
 		ArrayList<Route> routeList = ga.solve();
 		
-		for (Route route : routeList) {
-			try {
-				GaSort gaSort = new GaSort(30, 100, 0.8, 0.9);
-				gaSort.init(route.getSceneryList());
-				ArrayList<Scenery> sceneList = gaSort.solve();
-				route.setSceneryList(sceneList);//将排好序的对象重新加入route中
-				route.setDistance(gaSort.getBestLen());//记录最短的路径值
-				for (Scenery scenery : sceneList) {
-					System.out.print(scenery.getSname() + ",");
-				}
-				System.out.println("--热度：" + route.getHotness() + "--价格："+route.getSumPrice() + "--长度："+gaSort.getBestLen());
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+//		for (Route route : routeList) {
+//			try {
+//				GaSort gaSort = new GaSort(30, 100, 0.8, 0.9);
+//				gaSort.init(route.getSceneryList());
+//				ArrayList<Scenery> sceneList = gaSort.solve();
+//				route.setSceneryList(sceneList);//将排好序的对象重新加入route中
+//				route.setDistance(gaSort.getBestLen());//记录最短的路径值
+//				for (Scenery scenery : sceneList) {
+//					System.out.print(scenery.getSname() + ",");
+//				}
+//				System.out.println("--热度：" + route.getHotness() + "--价格："+route.getSumPrice() + "--长度："+gaSort.getBestLen());
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//		}
 		
-		SceneryUtil.saveRoutes(routeList, "E:\\traveldata\\routes\\" + routeList.get(0).getSurl());
+//		SceneryUtil.saveRoutes(routeList, "E:\\traveldata\\routes\\" + routeList.get(0).getSurl());
 		
 		System.out.println("总共：" + routeList.size() +"条路径");
 		long end = System.currentTimeMillis();

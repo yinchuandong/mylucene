@@ -64,8 +64,9 @@ public class GreedyUtil {
 	 */
 	private void calculate(){
 		int len = sceneryList.size();
+		int spanLen = len > 30 ? 30 : len;
 		//¿ØÖÆ¿ç¶È
-		for (int span = 1; span < len; span++) {
+		for (int span = 1; span < spanLen; span++) {
 			for(int i=0; i < len; i++){
 				double tmpDays = 0.0;
 				int tmpViewCount = 0;
@@ -230,10 +231,10 @@ public class GreedyUtil {
 	}
 
 	public static void main(String[] args) throws IOException{
-		ArrayList<Scenery> sceneryList = SceneryUtil.getSceneryList("622bc401f1153f0fd41f74dd");
-//		ArrayList<Scenery> sceneryList = SceneryUtil.getSceneryList("da666bc57594baeb76b3bcf0");
+//		ArrayList<Scenery> sceneryList = SceneryUtil.getSceneryList("622bc401f1153f0fd41f74dd");
+		ArrayList<Scenery> sceneryList = SceneryUtil.getSceneryList("da666bc57594baeb76b3bcf0");
 		GreedyUtil model = new GreedyUtil(2.0, 3.0, 300, sceneryList);
-		model.getInitPopulation();
+		int[][] population =  model.getInitPopulation();
 //		test();
 		System.out.println();
 	}

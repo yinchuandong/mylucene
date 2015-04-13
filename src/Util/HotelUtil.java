@@ -88,6 +88,10 @@ public class HotelUtil {
 	
 	
 	public static void main(String[] args) throws IOException{
+		long begin = System.currentTimeMillis();
 		getAllHotel();
+		long end = System.currentTimeMillis();
+		long delay = end - begin;
+		System.out.println("ºÄÊ±£º" + delay + "ms");
 	}
 }

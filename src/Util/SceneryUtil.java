@@ -2,6 +2,7 @@ package Util;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,7 +17,6 @@ import java.util.regex.Pattern;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-
 import Model.Route;
 import Model.Scenery;
 
@@ -44,9 +44,9 @@ public class SceneryUtil {
 	 */
 	public static double getVisitDays(String dayStr){
 		
-		double dayHours = 8.0;
+		double dayHours = 10.0;
 		if (dayStr == null || dayStr.equals("")) {
-			return 0.5;
+			return 0.3;
 		}
 		if (dayStr.contains("半小时")) {
 			return 2 / dayHours;
@@ -99,7 +99,7 @@ public class SceneryUtil {
 			return day;
 		}
 		
-		return 0.5;
+		return 0.3;
 	}
 	
 	
@@ -249,6 +249,22 @@ public class SceneryUtil {
 	}
 	
 	/**
+	 * 计算欧式距离
+	 * @param s1
+	 * @param s2
+	 * @return
+	 */
+	public static double calcDistance(Scenery s1, Scenery s2){
+		double distance = 0.0;
+		double x1 = s1.getMapX();
+		double y1 = s1.getMapY();
+		double x2 = s2.getMapX();
+		double y2 = s2.getMapY();
+		distance = Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+		return distance;
+	}
+	
+	/**
 	 * 将计算结果保存到文件夹中
 	 * @param routeList
 	 * @param dirPath
@@ -307,12 +323,38 @@ public class SceneryUtil {
 		return allDaysArr;
 	}
 	
+	/**
+	 * 将景点导入到text中
+	 */
+	public static void exportToText(){
+		try {
+			PrintWriter writer = new PrintWriter(new File("/Users/yinchuandong/Documents/guangzhou.txt"));
+			ArrayList<Scenery> list = getSceneryList("da666bc57594baeb76b3bcf0");
+			for (Scenery scenery : list) {
+				String str = "";
+				str += scenery.getSname() + ",";
+				str += scenery.getViewCount() + ",";
+				str += scenery.getVisitDay();
+				writer.println(str);
+			}
+			writer.flush();
+			writer.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String[] args){
 //		getSceneryList("da666bc57594baeb76b3bcf0");
-		getSceneryList("622bc401f1153f0fd41f74dd");
+		
+//		exportToText();
+		
+//		getSceneryList("622bc401f1153f0fd41f74dd");
 //		getSceneryMap("622bc401f1153f0fd41f74dd");
 //		getCity("da666bc57594baeb76b3bcf0");
 //		parsePrice("");
+		System.out.println("end");
 	}
 
 }
