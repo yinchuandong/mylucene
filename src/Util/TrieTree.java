@@ -2,26 +2,18 @@ package Util;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Stack;
 
-import javax.print.DocFlavor.STRING;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.collections.bag.TreeBag;
-import org.apache.commons.lang.WordUtils;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 
 
 import Util.AppUtil;
@@ -109,6 +101,11 @@ public class TrieTree {
 			}
 		}
 		
+		//如果keyword已经构成一个词,如:baiyunshan
+		if(node.isSentence){
+			result.add(new Sentence(prefix, node.getCount()));
+		}
+		
 		//节点栈，用来保存访问过的节点
 		Stack<TrieNode> nodeStack = new Stack<TrieNode>();
 		//字符栈，用来保存访问过的路径的字符
@@ -132,6 +129,11 @@ public class TrieTree {
 				result.add(sentence);
 				tmpStr = "";
 			}else{
+				//如果该字符已经构成一个keyword词，则加入到result中
+				if(tmpNode.isSentence){
+					Sentence sentence = new Sentence(tmpStr, tmpNode.getCount());
+					result.add(sentence);
+				}
 				//如果不是终端词，则将该词的children压栈，等待访问
 				Iterator<String> iterChild = tmpNode.getChildren().keySet().iterator();
 				while (iterChild.hasNext()) {
@@ -147,74 +149,11 @@ public class TrieTree {
 		return result;
 	}
 	
-	/**
-	 * 搜索文档
-	 * @param keyWord
-	 * @return
-	 */
-	public static String doSearch(String keyWord, String dirpath){
-		JSONObject resultObj = JSONObject.fromObject("{}");
-		if (keyWord == null || keyWord.length() <1) {
-			resultObj.put("info", AppUtil.toUnicode("关键字不合法"));
-			resultObj.put("status", "0");
-			resultObj.put("data", JSONArray.fromObject("[]"));
-			return resultObj.toString().replaceAll("\\\\u", "\\u");
-		}
-		
-		keyWord = keyWord.trim();
-		String fileName = keyWord.substring(0,1) + ".txt";
-		String filePath = dirpath + "/" + fileName;
-		
-		TrieTree tree = new TrieTree();
-		
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader(new File(filePath)));
-			String line = null;
-			while((line = reader.readLine()) != null){
-				String[] arr = line.split(" ");
-				String word = arr[0];
-				int viewCount = Integer.parseInt(arr[1]);
-				tree.add(word, viewCount);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			resultObj.put("info", AppUtil.toUnicode("服务器错误"));
-			resultObj.put("status", "0");
-			resultObj.put("data", JSONArray.fromObject("[]"));
-			return resultObj.toString().replaceAll("\\\\u", "\\u");
-		} finally{
-			try{
-				if (reader != null) {
-					reader.close();
-				}
-			}catch (Exception ex){
-				ex.printStackTrace();
-			}
-		}
-		
-		ArrayList<Sentence> list = tree.find(keyWord);
-		ArrayList<Sentence> keyList = new ArrayList<Sentence>();
-		int len = (list.size() > 10) ? 10 : list.size();
-		for (int i=0; i<len; i++){
-			Sentence sentence = list.get(i);
-			sentence.setWord(AppUtil.toUnicode(sentence.getWord()));
-			keyList.add(sentence);
-		}
-		
-		JSONArray jsonData = JSONArray.fromObject(keyList);
-		resultObj.put("info", AppUtil.toUnicode("返回成功"));
-		resultObj.put("status", "1");
-		resultObj.put("data", jsonData);
-		return resultObj.toString().replaceAll("\\\\u", "\\u");
-	}
 	
 	public static void main(String[] args) throws IOException{
 		System.out.println("-----------------");
 		long begin = System.currentTimeMillis();
 		
-		String result = TrieTree.doSearch("广州", "keyword");
-		System.out.println(result);
 		
 		long end = System.currentTimeMillis();
 		System.out.println("耗时：" + (end - begin));

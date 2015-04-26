@@ -120,7 +120,7 @@ public class TestIkAnalyzer {
 			}
 		}
 	}
-	
+
 	/**
 	 * 搜索
 	 */
@@ -173,8 +173,8 @@ public class TestIkAnalyzer {
 		long begin = System.currentTimeMillis();
 		TestIkAnalyzer analyzer = new TestIkAnalyzer();
 //		analyzer.writeIndex();
-		analyzer.search();
-//		analyzer.testSegment();
+//		analyzer.search();
+		analyzer.testSegment();
 		long end = System.currentTimeMillis();
 		System.out.println("耗时：" + (end - begin) + "ms");
 	}
@@ -184,9 +184,9 @@ public class TestIkAnalyzer {
 	 * @throws IOException
 	 */
 	public void testSegment() throws IOException{
-		String str = "内江白云山" ; 
+		String str = "内江白云山，白云山还好说,df" ; 
 	    StringReader reader = new StringReader(str); 
-	    IKSegmenter ik = new IKSegmenter(reader,false);//当为true时，分词器进行最大词长切分 
+	    IKSegmenter ik = new IKSegmenter(reader,true);//当为true时，分词器进行最大词长切分 
 	    Lexeme lexeme = null; 
 	    while((lexeme = ik.next())!=null) 
 	    System.out.println(lexeme.getLexemeText());

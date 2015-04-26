@@ -37,45 +37,44 @@ public class TestForIndex {
 	public static void main(String[] args) {
 		CreateIndex();
 	}
-	public static void CreateIndex()
-	{
+
+	public static void CreateIndex() {
 		File dir = new File("F:\\content");
 		File indexDir = new File("F:\\index");
 		IndexWriter indexWriter = null;
 		long startTime = 0l;
 		try {
-			Analyzer luceneAnalyzer=new IKAnalyzer();
-			Directory directory=new SimpleFSDirectory(indexDir);
-			IndexWriterConfig config=new IndexWriterConfig(Version.LUCENE_36, luceneAnalyzer);
-			indexWriter=new IndexWriter(directory, config);
+			Analyzer luceneAnalyzer = new IKAnalyzer();
+			Directory directory = new SimpleFSDirectory(indexDir);
+			IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_36,
+					luceneAnalyzer);
+			indexWriter = new IndexWriter(directory, config);
 			File[] files = dir.listFiles();
-			for(File file:files)
-			{
-				if(file.exists()&&file.getName().endsWith(".txt"))
-				{
-					System.out.println("文件 " + file.getCanonicalPath()+ " 开始索引");
-					FileReader reader=new FileReader(file);
-					Document document=new Document();
-					document.add(new Field("name",file.getName(),Field.Store.YES,Field.Index.ANALYZED));
+			for (File file : files) {
+				if (file.exists() && file.getName().endsWith(".txt")) {
+					System.out.println("文件 " + file.getCanonicalPath()
+							+ " 开始索引");
+					FileReader reader = new FileReader(file);
+					Document document = new Document();
+					document.add(new Field("name", file.getName(),
+							Field.Store.YES, Field.Index.ANALYZED));
 					document.add(new Field("content", reader));
 					document.add(new Field("path", file.getPath(),
 							Field.Store.YES, Field.Index.ANALYZED));
-					indexWriter.addDocument(document);	
+					indexWriter.addDocument(document);
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
-		} 
-		finally{
+		} finally {
 			if (indexWriter != null) {
 				try {
 					indexWriter.close();
-				} catch (Exception e2)
-				{
+				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
+			}
 		}
-	}
 		long endTime = new Date().getTime();
 		System.out.println("用时：" + (endTime - startTime) + " 毫秒");
 		System.out.println("索引路径：" + indexDir.getPath());

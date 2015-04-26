@@ -10,17 +10,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Stack;
 
-import javax.print.DocFlavor.STRING;
 
 import net.sf.json.JSONObject;
-
-import org.apache.commons.collections.bag.TreeBag;
-import org.apache.commons.lang.WordUtils;
-import org.apache.lucene.document.Document;
-import org.apache.lucene.document.Field;
 
 import Util.AppUtil;
 
@@ -83,7 +76,7 @@ public class TestTrieTree {
 		}
 		node.setTerminal(true);
 		node.setSentence(true);
-		System.out.println(word);
+//		System.out.println(word);
 		
 	}
 	
@@ -93,7 +86,6 @@ public class TestTrieTree {
 	 * @return
 	 */
 	public ArrayList<Sentence> find(String word){
-		System.out.println("-------------");
 		ArrayList<Sentence> result = new ArrayList<Sentence>();
 		 
 		TrieNode node = root;
@@ -105,8 +97,13 @@ public class TestTrieTree {
 				node = node.getChildren().get(key);
 				prefix += node.getWord();
 			}else{
-				return null;
+				return result;
 			}
+		}
+		
+		//如果keyword已经构成一个词,如:baiyunshan
+		if(node.isSentence){
+			result.add(new Sentence(prefix, node.getCount()));
 		}
 		
 		//节点栈，用来保存访问过的节点
@@ -132,6 +129,11 @@ public class TestTrieTree {
 				result.add(sentence);
 				tmpStr = "";
 			}else{
+				//如果该字符已经构成一个keyword词，则加入到result中
+				if(tmpNode.isSentence){
+					Sentence sentence = new Sentence(tmpStr, tmpNode.getCount());
+					result.add(sentence);
+				}
 				//如果不是终端词，则将该词的children压栈，等待访问
 				Iterator<String> iterChild = tmpNode.getChildren().keySet().iterator();
 				while (iterChild.hasNext()) {
@@ -162,7 +164,7 @@ public class TestTrieTree {
 			tree.add(word, viewCount);
 		}
 		reader.close();
-		ArrayList<Sentence> list = tree.find("广");
+		ArrayList<Sentence> list = tree.find("白云");
 		for (Sentence sentence : list) {
 			System.out.println(sentence.getViewCount() + ":" + sentence.getWord());
 		}
